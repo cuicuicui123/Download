@@ -4,6 +4,7 @@ import android.support.annotation.WorkerThread;
 
 import java.io.IOException;
 
+import okhttp3.Call;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -22,12 +23,11 @@ public class HttpManager {
                     public Response intercept(Chain chain) throws IOException {
                         Response originalResponse = chain.proceed(chain.request());
                         return originalResponse.newBuilder()
-                                .body(new ProgressResponseBody(originalResponse.body(), progressListener))
+                                .body(new ProgressResponseBody(originalResponse, progressListener))
                                 .build();
                     }
                 })
                 .build();
-
     }
 
     private static class SingletonHolder {
@@ -39,13 +39,15 @@ public class HttpManager {
     }
 
     @WorkerThread
-    public Response request(String url) {
+    public Response request(String url, DownloadRequest downloadRequest) {
         Request request = new Request.Builder()
                 .url(url)
                 .build();
         Response response = null;
         try {
-            response = okHttpClient.newCall(request).execute();
+            Call call = okHttpClient.newCall(request);
+            downloadRequest.setCall(call);
+            response = call.execute();
             if (response == null) {
                 throw new IOException("response is null");
             }
@@ -59,19 +61,8 @@ public class HttpManager {
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
-            closeResponse(response);
+            Utils.closeQuietly(response);
         }
         return response;
     }
-
-    private void closeResponse(Response response) {
-        if (response == null) {
-            return;
-        }
-        ResponseBody responseBody = response.body();
-        if (responseBody != null) {
-            responseBody.close();
-        }
-    }
-
 }

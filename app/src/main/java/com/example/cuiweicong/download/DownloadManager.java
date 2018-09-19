@@ -34,4 +34,16 @@ public class DownloadManager {
         return downloadRequests.remove(downloadRequest);
     }
 
+    public DownloadRequest findDownloadRequestByUrl(String url){
+        for (DownloadRequest downloadRequest : downloadRequests) {
+            if (downloadRequest.getUrl().equals(url)) {
+                return downloadRequest;
+            }
+        }
+        return null;
+    }
+
+    public List<DownloadRequest> getDownloadRequests() {
+        return downloadRequests;
+    }
 }

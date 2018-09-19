@@ -5,6 +5,8 @@ import android.support.annotation.Nullable;
 import java.io.IOException;
 
 import okhttp3.MediaType;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.ResponseBody;
 import okio.Buffer;
 import okio.BufferedSource;
@@ -14,13 +16,19 @@ import okio.Source;
 
 public class ProgressResponseBody extends ResponseBody {
 
-    private final ResponseBody responseBody;
     private final ProgressListener progressListener;
     private BufferedSource bufferedSource;
+    private ResponseBody responseBody;
+    private DownloadRequest downloadRequest;
 
-    public ProgressResponseBody(ResponseBody responseBody, ProgressListener progressListener) {
-        this.responseBody = responseBody;
+    public ProgressResponseBody(Response response, ProgressListener progressListener) {
         this.progressListener = progressListener;
+        if (response != null) {
+            responseBody = response.body();
+            Request request = response.request();
+            String url = request.url().toString();
+            this.downloadRequest = DownloadManager.getInstance().findDownloadRequestByUrl(url);
+        }
     }
 
     @Nullable
@@ -50,7 +58,8 @@ public class ProgressResponseBody extends ResponseBody {
             public long read(Buffer sink, long byteCount) throws IOException {
                 long bytesRead = super.read(sink, byteCount);
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
-                progressListener.update(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
+                progressListener.update(totalBytesRead, responseBody.contentLength(), bytesRead == -1,
+                        downloadRequest);
                 return bytesRead;
             }
         };
