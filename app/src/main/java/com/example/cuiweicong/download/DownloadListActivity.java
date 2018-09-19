@@ -50,7 +50,7 @@ public class DownloadListActivity extends AppCompatActivity {
             public void run() {
                 updateHandler.sendEmptyMessage(0);
             }
-        }, 0, 500);
+        }, 0, 200);
     }
 
     public void update(){
@@ -58,6 +58,8 @@ public class DownloadListActivity extends AppCompatActivity {
             DownloadRequest downloadRequest = (DownloadRequest) view.getTag();
             if (downloadRequest != null) {
                 TextView tv = view.findViewById(R.id.tv);
+                DownloadProgressView progressView = view.findViewById(R.id.progress_view);
+                progressView.setProgress(downloadRequest.isDone() ? 100 : downloadRequest.getDownloadPercent());
                 if (downloadRequest.isDone()) {
                     tv.setText("100%");
                 } else {

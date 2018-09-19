@@ -11,4 +11,11 @@
         android:textSize="15dp"
         android:textColor="#333333"/>
 
+    <com.example.cuiweicong.download.DownloadProgressView
+        android:id="@+id/progress_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="50dp"/>
+
 </RelativeLayout>
