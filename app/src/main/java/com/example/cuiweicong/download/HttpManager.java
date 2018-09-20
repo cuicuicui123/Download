@@ -2,7 +2,11 @@ package com.example.cuiweicong.download;
 
 import android.support.annotation.WorkerThread;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
 
 import okhttp3.Call;
 import okhttp3.Interceptor;
@@ -40,28 +44,49 @@ public class HttpManager {
 
     @WorkerThread
     public Response request(String url, DownloadRequest downloadRequest) {
-        Request request = new Request.Builder()
-                .url(url)
-                .build();
         Response response = null;
+        FileOutputStream fos = null;
         try {
-            Call call = okHttpClient.newCall(request);
-            downloadRequest.setCall(call);
-            response = call.execute();
-            if (response == null) {
-                throw new IOException("response is null");
+            String fileName = FileUtils.getFileNameFromUrl(url);
+            File folder = new File(FileUtils.getDiskFileRootPath());
+            if (!folder.exists()) {
+                folder.mkdirs();
             }
-            if (response.code() < 200 || response.code() > 300) {
-                throw new Exception("http code is not 2XX , code is = " + response.code());
-            }
-            ResponseBody responseBody = response.body();
-            if (responseBody != null) {
-                System.out.println(responseBody.string());
+            File file = new File(String.format("%s/%s", FileUtils.getDiskFileRootPath(), fileName));
+            if (!file.exists()) {
+                file.createNewFile();
+                fos = new FileOutputStream(file);
+                Request request = new Request.Builder()
+                        .addHeader("Range", String.format(Locale.CHINA, "bytes=%d-", downloadRequest.getDownLength()))
+                        .url(url)
+                        .build();
+                Call call = okHttpClient.newCall(request);
+                downloadRequest.setCall(call);
+                response = call.execute();
+                if (response == null) {
+                    throw new IOException("response is null");
+                }
+                if (response.code() < 200 || response.code() > 300) {
+                    throw new Exception("http code is not 2XX , code is = " + response.code());
+                }
+                ResponseBody responseBody = response.body();
+                if (responseBody != null) {
+                    InputStream inputStream = responseBody.byteStream();
+                    byte[] buff = new byte[2048];
+                    int len;
+                    while ((len = inputStream.read(buff)) != -1) {
+                        fos.write(buff, 0, len);
+                    }
+                }
+                fos.flush();
+            } else {
+                MainThreadUtils.toast("文件已下载！");
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             Utils.closeQuietly(response);
+            Utils.closeQuietly(fos);
         }
         return response;
     }

@@ -8,6 +8,7 @@ public class DownloadRequest implements Runnable {
     private long contentLength;
     private volatile int downloadPercent;
     private volatile boolean done;
+    private volatile long downLength;
 
     public DownloadRequest(Builder builder) {
         this.builder = builder;
@@ -52,6 +53,14 @@ public class DownloadRequest implements Runnable {
 
     public boolean isDone() {
         return done;
+    }
+
+    public long getDownLength() {
+        return downLength;
+    }
+
+    public void setDownLength(long downLength) {
+        this.downLength = downLength;
     }
 
     public static class Builder {

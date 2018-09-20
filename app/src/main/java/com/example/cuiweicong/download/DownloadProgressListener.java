@@ -28,6 +28,7 @@ public class DownloadProgressListener implements ProgressListener {
                 int percent = (int) ((100 * bytesRead) / contentLength);
                 if (downloadRequest != null) {
                     downloadRequest.setDownloadPercent(percent);
+                    downloadRequest.setDownLength(bytesRead);
                 }
                 LogUtils.logI(String.format(Locale.CHINA, "%d%% done\n", percent));
             }
