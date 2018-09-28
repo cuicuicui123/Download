@@ -6,9 +6,9 @@ public class DownloadRequest implements Runnable {
     private Builder builder;
     private Call call;
     private long contentLength;
-    private volatile int downloadPercent;
     private volatile boolean done;
     private volatile long downLength;
+    private volatile boolean pause = false;
 
     public DownloadRequest(Builder builder) {
         this.builder = builder;
@@ -19,8 +19,16 @@ public class DownloadRequest implements Runnable {
         HttpManager.getInstance().request(builder.url, this);
     }
 
-    public void cancel() {
+    public synchronized void cancel() {
         call.cancel();
+    }
+
+    public synchronized void pause(){
+        pause = true;
+    }
+
+    public synchronized void restart(){
+        pause = false;
     }
 
     public void setCall(Call call) {
@@ -36,11 +44,10 @@ public class DownloadRequest implements Runnable {
     }
 
     public int getDownloadPercent() {
-        return downloadPercent;
-    }
-
-    public void setDownloadPercent(int downloadPercent) {
-        this.downloadPercent = downloadPercent;
+        if (contentLength == 0) {
+            return 0;
+        }
+        return (int) (downLength * 100 / contentLength);
     }
 
     public String getUrl() {
@@ -61,6 +68,10 @@ public class DownloadRequest implements Runnable {
 
     public void setDownLength(long downLength) {
         this.downLength = downLength;
+    }
+
+    public boolean isPause() {
+        return pause;
     }
 
     public static class Builder {

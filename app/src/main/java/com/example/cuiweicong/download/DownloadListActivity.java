@@ -30,7 +30,7 @@ public class DownloadListActivity extends AppCompatActivity {
 
         ll = findViewById(R.id.ll);
 
-        DownloadManager downloadManager = DownloadManager.getInstance();
+        final DownloadManager downloadManager = DownloadManager.getInstance();
         List<DownloadRequest> list = downloadManager.getDownloadRequests();
         itemViews = new ArrayList<>();
         updateHandler = new UpdateHandler(this);
@@ -41,7 +41,18 @@ public class DownloadListActivity extends AppCompatActivity {
             View view = layoutInflater.inflate(R.layout.download_item, ll, false);
             ll.addView(view);
             itemViews.add(view);
-            view.setTag(iterator.next());
+            final DownloadRequest downloadRequest = iterator.next();
+            view.setTag(downloadRequest);
+            view.findViewById(R.id.tv_pause).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (downloadRequest.isPause()) {
+                        downloadRequest.restart();
+                    } else {
+                        downloadRequest.pause();
+                    }
+                }
+            });
         }
 
         timer = new Timer();

@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 LogUtils.logI("start");
                 DownloadManager downloadManager = DownloadManager.getInstance();
-                downloadManager.downLoad(FileUrl.picList.get(0));
+                downloadManager.downLoad(FileUrl.picList.get(0), MainActivity.this);
             }
         });
         button2.setOnClickListener(new View.OnClickListener() {
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 LogUtils.logI("start2");
                 DownloadManager downloadManager = DownloadManager.getInstance();
-                downloadManager.downLoad(FileUrl.picList.get(1));
+                downloadManager.downLoad(FileUrl.picList.get(1), MainActivity.this);
             }
         });
         buttonLook = findViewById(R.id.btn_look);

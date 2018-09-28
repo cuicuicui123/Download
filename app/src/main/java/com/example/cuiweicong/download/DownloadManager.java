@@ -1,5 +1,9 @@
 package com.example.cuiweicong.download;
 
+import android.support.v4.app.FragmentActivity;
+import android.view.View;
+
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +26,25 @@ public class DownloadManager {
         return SingletonHolder.instance;
     }
 
-    public void downLoad(final String url){
+    public void downLoad(final String url, FragmentActivity activity){
+        String fileName = FileUtils.getFileNameFromUrl(url);
+        File file = new File(String.format("%s/%s", FileUtils.getDiskFileRootPath(), fileName));
+        if (!file.exists()) {
+            startDownload(url);
+        } else {
+            DownloadRemindDialogFragment dialogFragment = new DownloadRemindDialogFragment();
+            dialogFragment.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startDownload(url);
+                }
+            });
+            dialogFragment.show(activity.getSupportFragmentManager(), "文件已存在提醒！");
+        }
+
+    }
+
+    private void startDownload(String url) {
         DownloadRequest downloadRequest = new DownloadRequest.Builder()
                 .setUrl(url)
                 .build();

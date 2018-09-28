@@ -11,6 +11,14 @@
         android:textSize="15dp"
         android:textColor="#333333"/>
 
+    <Button
+        android:id="@+id/tv_pause"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="暂停"
+        android:layout_below="@id/tv"
+        android:layout_marginTop="10dp"/>
+
     <com.example.cuiweicong.download.DownloadProgressView
         android:id="@+id/progress_view"
         android:layout_width="match_parent"
