@@ -1,7 +1,12 @@
-package com.example.cuiweicong.download;
+package com.example.cuiweicong.download.file;
 
 import android.content.Context;
 import android.os.Environment;
+
+import com.example.cuiweicong.download.MyApplication;
+
+import java.io.File;
+import java.io.IOException;
 
 public class FileUtils {
 
@@ -39,6 +44,23 @@ public class FileUtils {
             e.printStackTrace();
         }
         return path;
+    }
+
+    /**
+     * 根据文件名创建文件
+     * @param url 文件链接
+     * @return 创建的文件
+     * @throws IOException
+     */
+    public static File createFileByUrl(String url) throws IOException {
+        String fileName = FileUtils.getFileNameFromUrl(url);
+        File folder = new File(FileUtils.getDiskFileRootPath());
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        File file = new File(String.format("%s/%s", FileUtils.getDiskFileRootPath(), fileName));
+        file.createNewFile();
+        return file;
     }
 
 }

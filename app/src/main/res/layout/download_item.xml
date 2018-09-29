@@ -19,7 +19,7 @@
         android:layout_below="@id/tv"
         android:layout_marginTop="10dp"/>
 
-    <com.example.cuiweicong.download.DownloadProgressView
+    <com.example.cuiweicong.download.download.DownloadProgressView
         android:id="@+id/progress_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

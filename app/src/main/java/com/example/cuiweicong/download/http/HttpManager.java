@@ -1,6 +1,10 @@
-package com.example.cuiweicong.download;
+package com.example.cuiweicong.download.http;
 
 import android.support.annotation.WorkerThread;
+
+import com.example.cuiweicong.download.Utils;
+import com.example.cuiweicong.download.download.DownloadRequest;
+import com.example.cuiweicong.download.file.FileUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,13 +38,7 @@ public class HttpManager {
         Response response = null;
         FileOutputStream fos = null;
         try {
-            String fileName = FileUtils.getFileNameFromUrl(url);
-            File folder = new File(FileUtils.getDiskFileRootPath());
-            if (!folder.exists()) {
-                folder.mkdirs();
-            }
-            File file = new File(String.format("%s/%s", FileUtils.getDiskFileRootPath(), fileName));
-            file.createNewFile();
+            File file = FileUtils.createFileByUrl(url);
             fos = new FileOutputStream(file);
             Request request = new Request.Builder()
                     .addHeader("Range", String.format(Locale.CHINA, "bytes=%d-", downloadRequest.getDownLength()))
@@ -69,6 +67,7 @@ public class HttpManager {
                             downloadRequest.setDownLength(downloadRequest.getDownLength() + len);
                         } else {
                             done = true;
+                            downloadRequest.setDone(true);
                         }
                     }
                 }

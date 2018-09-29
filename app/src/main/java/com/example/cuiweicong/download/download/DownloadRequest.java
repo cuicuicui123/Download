@@ -1,4 +1,6 @@
-package com.example.cuiweicong.download;
+package com.example.cuiweicong.download.download;
+
+import com.example.cuiweicong.download.http.HttpManager;
 
 import okhttp3.Call;
 

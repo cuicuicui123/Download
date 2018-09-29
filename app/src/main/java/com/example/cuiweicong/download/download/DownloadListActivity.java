@@ -1,4 +1,4 @@
-package com.example.cuiweicong.download;
+package com.example.cuiweicong.download.download;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.example.cuiweicong.download.R;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -72,7 +74,8 @@ public class DownloadListActivity extends AppCompatActivity {
                 DownloadProgressView progressView = view.findViewById(R.id.progress_view);
                 progressView.setProgress(downloadRequest.isDone() ? 100 : downloadRequest.getDownloadPercent());
                 if (downloadRequest.isDone()) {
-                    tv.setText("100%");
+                    tv.setText("已完成");
+                    view.findViewById(R.id.tv_pause).setVisibility(View.GONE);
                 } else {
                     tv.setText(String.format(Locale.CHINA, "%d%%", downloadRequest.getDownloadPercent()));
                 }

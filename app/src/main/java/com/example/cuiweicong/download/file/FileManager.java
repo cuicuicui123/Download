@@ -1,4 +1,4 @@
-package com.example.cuiweicong.download;
+package com.example.cuiweicong.download.file;
 
 public class FileManager {
 

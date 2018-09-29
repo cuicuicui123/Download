@@ -1,4 +1,4 @@
-package com.example.cuiweicong.download;
+package com.example.cuiweicong.download.download;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -8,6 +8,8 @@ import android.graphics.Rect;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+
+import com.example.cuiweicong.download.R;
 
 public class DownloadProgressView extends View {
     private int progress;
